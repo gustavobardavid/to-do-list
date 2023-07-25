@@ -21,7 +21,7 @@ const addTask = async (tasks) => {
 };
 
 const deletarTask = async (id) => {
-    const removerTask = await connection.execute('DELETE FROM TASK WHERE id = ? ' , [id]);
+    const removerTask = await connection.execute('DELETE FROM TASKS WHERE id = ? ' , [id]);
     return removerTask;  
 }
 
