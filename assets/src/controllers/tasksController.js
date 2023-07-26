@@ -9,7 +9,7 @@ const getALL = async (req, res) => {
 
 const addTask = async (req, res ) => {
    
-    const createdTask = await tasksModels.addTasks(req.body);
+    const createdTask = await tasksModels.addTask(req.body);
     
     return res.status(201).json(createdTask);
 };

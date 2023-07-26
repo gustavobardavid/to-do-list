@@ -1,3 +1,5 @@
+// const { deletarTask } = require("../../assets/src/models/tasksModels");
+
 window.addEventListener('load' , loadTasks);
 
 let tbody = document.querySelector('tbody');
@@ -14,14 +16,22 @@ const addTask = async () => {
     await fetch('http://localhost:3000/tasks' , {
       method:'post',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(partida),
+      body: JSON.stringify(task),
     })
 }
 
-const fetchPartidas = async () => {
-  const resposta = await fetch('http://localhost:3000/partidas');
-  const partidas = await resposta.json();
-  return partidas;
+async function excluirTask(id) {
+  await fetch(`http://localhost:3000/tasks/${id}`, {
+    method: 'delete'
+  });
+
+  loadTasks();
+}
+
+const fetchTasks = async () => {
+  const resposta = await fetch('http://localhost:3000/tasks');
+  const tasks = await resposta.json();
+  return tasks;
 }
 
 function createElement (tag, textContent = '', innerHTML = '') {
@@ -36,8 +46,8 @@ function createElement (tag, textContent = '', innerHTML = '') {
     return element;
 }
 
-function criarLinha(partida) {
-  const { title, local , data} = partida; 
+function criarLinha(task) {
+  const { id, title, local , data} = task; 
   const tr = createElement('tr');
   const tdTitle = createElement('td' , title);
   const tdLocal = createElement('td' , local);  
@@ -46,6 +56,11 @@ function criarLinha(partida) {
 
   const editButton = createElement('button' , '', '<span class="material-symbols-outlined">edit_calendar</span>');
   const deleteButton = createElement('button' , '', '<span class="material-symbols-outlined">delete</span>');
+  
+  deleteButton.addEventListener('click' , () => {
+    excluirTask(id);
+  });
+
   editButton.classList.add('btn-action');
   deleteButton.classList.add('btn-action');
   tdAções.appendChild(editButton);
@@ -59,16 +74,17 @@ function criarLinha(partida) {
 }
 
 async function loadTasks  () {
-    const partidas = await fetchPartidas();
-    partidas.forEach(partida => {
-        const tr = criarLinha(partida);
+    const task = await fetchTasks();
+    tbody.replaceChildren(...[]);
+    task.forEach(task => {
+        const tr = criarLinha(task);
         tbody.appendChild(tr);
     });
 }
 
 
 addForm.addEventListener('submit', () => {
-  addPartida();
+  addTask();
   loadTasks();
 });
 
